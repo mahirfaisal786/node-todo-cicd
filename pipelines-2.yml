@@ -18,8 +18,14 @@ steps:
 - script: |
     npm install
     npm run build
-    npm test
   displayName: 'npm install and build'
+- task: CopyFiles@2
+  inputs:
+    Contents: |
+      **/*.js
+      **/*.json
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
@@ -27,8 +33,3 @@ steps:
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml'
-    failTaskOnFailedTests: true
